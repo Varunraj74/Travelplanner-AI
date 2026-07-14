@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TravelPlannerPro — AI-Powered Travel Planning</title>
+  <meta name="description" content="AI-powered travel planner built with IBM Granite & IBM watsonx.ai. Generate personalized itineraries instantly."/>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+</head>
+<body>
+
+<!-- ─── Navigation ─────────────────────────────────────────────────────────── -->
+<nav class="navbar navbar-expand-lg navbar-dark tpp-navbar fixed-top">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center gap-2 fw-bold" href="/">
+      <span class="brand-icon">✈</span>
+      <span>TravelPlannerPro</span>
+    </a>
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto align-items-center gap-2">
+        <li class="nav-item"><a class="nav-link active" href="/">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="/dashboard">Plan a Trip</a></li>
+        <li class="nav-item"><a class="nav-link" href="/workspace">Workspace</a></li>
+        <li class="nav-item">
+          <span class="badge {% if demo_mode %}badge-demo{% else %}badge-ai{% endif %} ms-2">
+            {% if demo_mode %}<i class="bi bi-cpu me-1"></i>Demo Mode{% else %}<i class="bi bi-lightning-fill me-1"></i>AI Active{% endif %}
+          </span>
+        </li>
+        <li class="nav-item ms-2">
+          <button class="btn btn-sm btn-outline-light" id="themeToggle" title="Toggle dark/light mode">
+            <i class="bi bi-moon-stars-fill"></i>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- ─── Hero Section ───────────────────────────────────────────────────────── -->
+<section class="hero-section">
+  <div class="hero-particles" id="heroParticles"></div>
+  <div class="container">
+    <div class="row min-vh-100 align-items-center justify-content-center text-center">
+      <div class="col-lg-9">
+
+        <!-- Badge -->
+        <div class="hero-badge animate-fade-up">
+          <i class="bi bi-stars me-2"></i>
+          Powered by IBM Granite &amp; IBM watsonx.ai
+        </div>
+
+        <!-- Headline -->
+        <h1 class="hero-title animate-fade-up delay-1">
+          Plan Your Dream Trip<br/>
+          <span class="text-gradient">with AI Intelligence</span>
+        </h1>
+
+        <p class="hero-subtitle animate-fade-up delay-2">
+          ARIA — your AI Roaming Itinerary Assistant — crafts hyper-personalized travel plans,
+          day-by-day itineraries, budget breakdowns, and hidden gems
+          using IBM Granite foundation models.
+        </p>
+
+        <!-- CTA Buttons -->
+        <div class="d-flex flex-wrap gap-3 justify-content-center animate-fade-up delay-3">
+          <a href="/dashboard" class="btn btn-primary-gradient btn-lg px-5">
+            <i class="bi bi-map me-2"></i>Start Planning Free
+          </a>
+          <a href="#features" class="btn btn-outline-glass btn-lg px-4">
+            <i class="bi bi-play-circle me-2"></i>See How It Works
+          </a>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="hero-stats animate-fade-up delay-4">
+          <div class="stat-item">
+            <div class="stat-value">18+</div>
+            <div class="stat-label">Report Sections</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">IBM</div>
+            <div class="stat-label">Granite AI Model</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">PDF</div>
+            <div class="stat-label">Export Ready</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">FREE</div>
+            <div class="stat-label">IBM Cloud Lite</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <!-- Scroll indicator -->
+  <div class="scroll-indicator animate-bounce">
+    <i class="bi bi-chevron-double-down"></i>
+  </div>
+</section>
+
+<!-- ─── IBM Integration Banner ──────────────────────────────────────────────── -->
+<section class="ibm-banner py-4">
+  <div class="container">
+    <div class="d-flex flex-wrap align-items-center justify-content-center gap-4 text-center">
+      <div class="ibm-badge-item">
+        <i class="bi bi-cpu-fill me-2 text-primary"></i>
+        <strong>IBM Granite</strong> — Foundation Model
+      </div>
+      <div class="ibm-divider d-none d-md-block">|</div>
+      <div class="ibm-badge-item">
+        <i class="bi bi-cloud-fill me-2 text-info"></i>
+        <strong>IBM watsonx.ai</strong> — AI Platform
+      </div>
+      <div class="ibm-divider d-none d-md-block">|</div>
+      <div class="ibm-badge-item">
+        <i class="bi bi-shield-check-fill me-2 text-success"></i>
+        <strong>IBM Cloud Lite</strong> — Free Tier
+      </div>
+      <div class="ibm-divider d-none d-md-block">|</div>
+      <div class="ibm-badge-item">
+        <i class="bi bi-book-fill me-2 text-warning"></i>
+        <strong>Edunet Foundation</strong> — IBM SkillsBuild
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Features Section ─────────────────────────────────────────────────────── -->
+<section id="features" class="section-features py-6">
+  <div class="container">
+    <div class="text-center mb-5">
+      <div class="section-badge">What ARIA Generates For You</div>
+      <h2 class="section-title">Everything You Need for the<br/><span class="text-gradient">Perfect Trip</span></h2>
+      <p class="section-sub text-muted">From executive summary to hidden gems — AI crafts your complete travel blueprint</p>
+    </div>
+
+    <div class="row g-4">
+      <!-- Feature Cards -->
+      {% set features = [
+        ("bi-calendar3-range", "Day-wise Itinerary", "Detailed hour-by-hour schedule for every day of your trip with activity suggestions, timings, and pro tips.", "primary"),
+        ("bi-piggy-bank", "Budget Breakdown", "Itemised cost analysis for flights, hotels, food, activities, and shopping with money-saving strategies.", "success"),
+        ("bi-building", "Hotel Recommendations", "Curated accommodation options across budget, mid-range, boutique, and luxury tiers for every destination.", "info"),
+        ("bi-train-front", "Transport Guide", "Optimal routes, local transport options, booking tips, and estimated costs for seamless travel.", "warning"),
+        ("bi-shop", "Local Food Guide", "Must-try dishes, best restaurants, street food spots, and culinary experiences unique to your destination.", "danger"),
+        ("bi-compass", "Hidden Gems", "Off-beat attractions, secret viewpoints, and local favourites that most tourists miss.", "secondary"),
+        ("bi-cloud-sun", "Weather Overview", "Season-wise weather forecast, packing advice, and best time-to-visit analysis.", "primary"),
+        ("bi-bag-check", "Packing Checklist", "Comprehensive, categorised packing list tailored to your destination, duration, and travel style.", "success"),
+        ("bi-shield-check", "Safety Guidelines", "Destination-specific safety tips, emergency contacts, and responsible travel advice.", "info"),
+        ("bi-currency-exchange", "Money Saving Tips", "Smart hacks to stretch your budget — early booking, local transport, seasonal discounts & more.", "warning"),
+        ("bi-globe", "Culture & Etiquette", "Local customs, dress codes, language tips, and do's & don'ts for respectful travel.", "danger"),
+        ("bi-file-earmark-pdf", "PDF Export", "Download a professional travel report with cover page, itinerary, budget tables, and hotel guides.", "secondary"),
+      ] %}
+      {% for icon, title, desc, color in features %}
+      <div class="col-md-6 col-lg-4">
+        <div class="feature-card h-100 animate-fade-up">
+          <div class="feature-icon text-{{ color }}">
+            <i class="bi {{ icon }}"></i>
+          </div>
+          <h5 class="feature-title">{{ title }}</h5>
+          <p class="feature-desc text-muted mb-0">{{ desc }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ─── How It Works ─────────────────────────────────────────────────────────── -->
+<section class="section-how py-6">
+  <div class="container">
+    <div class="text-center mb-5">
+      <div class="section-badge">Simple 3-Step Process</div>
+      <h2 class="section-title">How <span class="text-gradient">TravelPlannerPro</span> Works</h2>
+    </div>
+    <div class="row g-4 justify-content-center">
+      <div class="col-md-4">
+        <div class="how-card text-center">
+          <div class="how-step">01</div>
+          <div class="how-icon"><i class="bi bi-pencil-square"></i></div>
+          <h5>Enter Trip Details</h5>
+          <p class="text-muted">Fill in your source, destination, dates, budget, and preferences in our smart planning form.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="how-card text-center">
+          <div class="how-step">02</div>
+          <div class="how-icon"><i class="bi bi-cpu"></i></div>
+          <h5>IBM Granite AI Generates</h5>
+          <p class="text-muted">IBM Granite foundation model processes your inputs and creates a fully personalized travel plan.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="how-card text-center">
+          <div class="how-step">03</div>
+          <div class="how-icon"><i class="bi bi-download"></i></div>
+          <h5>Chat, Refine & Export</h5>
+          <p class="text-muted">Chat with ARIA for refinements, ask follow-up questions, and export your plan as a professional PDF.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Travel Styles Section ────────────────────────────────────────────────── -->
+<section class="section-styles py-6">
+  <div class="container">
+    <div class="text-center mb-5">
+      <div class="section-badge">Every Kind of Traveller</div>
+      <h2 class="section-title">Travel Styles <span class="text-gradient">Supported</span></h2>
+    </div>
+    <div class="row g-3 justify-content-center">
+      {% set styles = [
+        ("🧳", "Solo Travel", "Independent journeys with safety tips"),
+        ("👨‍👩‍👧", "Family Travel", "Kid-friendly and convenient experiences"),
+        ("💼", "Business Travel", "Efficient, connected, premium comfort"),
+        ("🏔️", "Adventure", "Trekking, extreme sports, off-beat routes"),
+        ("👑", "Luxury Travel", "5-star, exclusive, VIP experiences"),
+        ("🌿", "Sustainable", "Eco-friendly, responsible tourism"),
+        ("🪷", "Indian Tourism", "Incredible India, heritage & culture"),
+        ("💑", "Couple Travel", "Romantic getaways & honeymoon plans"),
+      ] %}
+      {% for emoji, title, desc in styles %}
+      <div class="col-6 col-md-3">
+        <div class="style-card text-center">
+          <div class="style-emoji">{{ emoji }}</div>
+          <div class="style-title">{{ title }}</div>
+          <div class="style-desc text-muted small">{{ desc }}</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA Section ──────────────────────────────────────────────────────────── -->
+<section class="section-cta py-6">
+  <div class="container">
+    <div class="cta-card text-center">
+      <h2 class="mb-3">Ready to Plan Your <span class="text-gradient">Next Adventure?</span></h2>
+      <p class="text-muted mb-4 lead">
+        Join thousands of travellers using AI-powered planning.<br/>
+        No signup needed — just start planning!
+      </p>
+      <a href="/dashboard" class="btn btn-primary-gradient btn-lg px-5">
+        <i class="bi bi-map-fill me-2"></i>Plan My Trip Now
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Footer ──────────────────────────────────────────────────────────────── -->
+<footer class="tpp-footer py-5">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="fw-bold fs-5 mb-2">✈ TravelPlannerPro</div>
+        <p class="text-muted small">AI-powered travel planning using IBM Granite foundation models via IBM watsonx.ai. Edunet Foundation IBM SkillsBuild Final Project.</p>
+      </div>
+      <div class="col-md-2 col-6">
+        <div class="footer-heading">Navigate</div>
+        <ul class="footer-links">
+          <li><a href="/">Home</a></li>
+          <li><a href="/dashboard">Plan Trip</a></li>
+          <li><a href="/workspace">Workspace</a></li>
+        </ul>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="footer-heading">AI Powered By</div>
+        <ul class="footer-links">
+          <li><a href="https://www.ibm.com/watsonx" target="_blank">IBM watsonx.ai</a></li>
+          <li><a href="https://www.ibm.com/granite" target="_blank">IBM Granite Models</a></li>
+          <li><a href="https://cloud.ibm.com" target="_blank">IBM Cloud Lite</a></li>
+        </ul>
+      </div>
+      <div class="col-md-3">
+        <div class="footer-heading">Project Info</div>
+        <ul class="footer-links">
+          <li>Problem Statement No. 5</li>
+          <li>Travel Planner Agent</li>
+          <li>Edunet Foundation</li>
+          <li>IBM SkillsBuild Program</li>
+        </ul>
+      </div>
+    </div>
+    <hr class="footer-divider"/>
+    <div class="text-center text-muted small">
+      &copy; 2024 TravelPlannerPro · Built with <i class="bi bi-heart-fill text-danger"></i> using IBM Granite &amp; Flask ·
+      Problem Statement No. 5 — Travel Planner Agent
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script>
+  // Hero particles animation
+  (function() {
+    const container = document.getElementById('heroParticles');
+    if (!container) return;
+    const symbols = ['✈', '🌍', '🗺', '⭐', '🏔', '🌊', '🏰', '🌺'];
+    for (let i = 0; i < 20; i++) {
+      const el = document.createElement('div');
+      el.className = 'particle';
+      el.textContent = symbols[i % symbols.length];
+      el.style.cssText = `
+        left: ${Math.random() * 100}%;
+        top: ${Math.random() * 100}%;
+        font-size: ${12 + Math.random() * 18}px;
+        animation-delay: ${Math.random() * 8}s;
+        animation-duration: ${6 + Math.random() * 8}s;
+        opacity: ${0.05 + Math.random() * 0.15};
+      `;
+      container.appendChild(el);
+    }
+  })();
+</script>
+</body>
+</html>

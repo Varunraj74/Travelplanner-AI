@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Workspace — TravelPlannerPro</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+</head>
+<body>
+
+<!-- ─── Navigation ─────────────────────────────────────────────────────────── -->
+<nav class="navbar navbar-expand-lg navbar-dark tpp-navbar fixed-top">
+  <div class="container-fluid px-4">
+    <a class="navbar-brand d-flex align-items-center gap-2 fw-bold" href="/">
+      <span class="brand-icon">✈</span><span>TravelPlannerPro</span>
+    </a>
+    <div class="d-flex align-items-center gap-3">
+      <a href="/dashboard" class="btn btn-sm btn-outline-light">
+        <i class="bi bi-plus-circle me-1"></i>New Plan
+      </a>
+      <span class="badge {% if demo_mode %}badge-demo{% else %}badge-ai{% endif %}">
+        {% if demo_mode %}<i class="bi bi-cpu me-1"></i>Demo{% else %}<i class="bi bi-lightning-fill me-1"></i>AI Active{% endif %}
+      </span>
+      <button class="btn btn-sm btn-outline-light" id="themeToggle"><i class="bi bi-moon-stars-fill"></i></button>
+    </div>
+  </div>
+</nav>
+
+<!-- ─── Workspace Layout ────────────────────────────────────────────────────── -->
+<div class="workspace-layout">
+
+  <!-- ─── Left Panel: Itinerary Viewer ─────────────────────────────────────── -->
+  <div class="workspace-left" id="workspaceLeft">
+    <div class="panel-header">
+      <div class="d-flex align-items-center gap-2">
+        <i class="bi bi-map-fill text-primary"></i>
+        <span class="fw-semibold">Travel Itinerary</span>
+      </div>
+      <div class="d-flex gap-2 align-items-center">
+        <button class="btn btn-sm btn-ghost" id="copyItinerary" title="Copy to clipboard">
+          <i class="bi bi-clipboard"></i>
+        </button>
+        <button class="btn btn-sm btn-ghost" id="printItinerary" title="Print itinerary">
+          <i class="bi bi-printer"></i>
+        </button>
+        <button class="btn btn-sm btn-primary-sm" id="exportPdfBtn">
+          <i class="bi bi-file-earmark-pdf me-1"></i>Export PDF
+        </button>
+      </div>
+    </div>
+
+    <!-- No itinerary state -->
+    <div class="empty-state" id="emptyItinerary">
+      <div class="empty-icon">🗺️</div>
+      <h5>No Itinerary Yet</h5>
+      <p class="text-muted">Head to the Planning Dashboard to generate your AI travel plan</p>
+      <a href="/dashboard" class="btn btn-primary-gradient">
+        <i class="bi bi-map me-2"></i>Plan a Trip
+      </a>
+    </div>
+
+    <!-- Itinerary content -->
+    <div class="itinerary-content" id="itineraryContent" style="display:none;">
+      <!-- Trip header strip -->
+      <div class="trip-header-strip" id="tripHeaderStrip">
+        <div class="trip-route" id="tripRoute">Loading...</div>
+        <div class="trip-meta-row" id="tripMetaRow"></div>
+      </div>
+
+      <!-- Demo mode notice -->
+      {% if demo_mode %}
+      <div class="demo-notice mx-3 mt-3">
+        <i class="bi bi-info-circle-fill me-2"></i>
+        <strong>Demo Mode:</strong> Add IBM credentials to <code>.env</code> for live IBM Granite AI generation.
+      </div>
+      {% endif %}
+
+      <!-- Itinerary body -->
+      <div class="itinerary-body" id="itineraryBody"></div>
+    </div>
+  </div>
+
+  <!-- ─── Right Panel: AI Chat ──────────────────────────────────────────────── -->
+  <div class="workspace-right" id="workspaceRight">
+    <div class="panel-header">
+      <div class="d-flex align-items-center gap-2">
+        <div class="aria-avatar">A</div>
+        <div>
+          <div class="fw-semibold">ARIA</div>
+          <div class="aria-status">
+            <span class="status-dot"></span>
+            <small>AI Roaming Itinerary Assistant</small>
+          </div>
+        </div>
+      </div>
+      <div class="d-flex gap-2">
+        <button class="btn btn-sm btn-ghost" id="clearChatBtn" title="Clear chat">
+          <i class="bi bi-trash3"></i>
+        </button>
+        <button class="btn btn-sm btn-ghost" id="toggleChatPanel" title="Collapse/Expand">
+          <i class="bi bi-arrow-bar-right"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Chat messages -->
+    <div class="chat-messages" id="chatMessages">
+      <!-- Welcome message -->
+      <div class="chat-bubble assistant">
+        <div class="bubble-content">
+          <p>👋 Hi! I'm <strong>ARIA</strong> — your AI Roaming Itinerary Assistant powered by <strong>IBM Granite</strong>.</p>
+          <p>Generate a travel plan from the <a href="/dashboard" class="chat-link">Dashboard</a>, then ask me anything!</p>
+          <p>I can help with:</p>
+          <ul>
+            <li>🏨 Hotel recommendations</li>
+            <li>🍽️ Food & restaurant guide</li>
+            <li>💰 Budget optimization</li>
+            <li>🛡️ Safety advice</li>
+            <li>📋 Visa & documents</li>
+            <li>🌤️ Weather & packing</li>
+          </ul>
+          {% if demo_mode %}
+          <div class="bubble-note">
+            <i class="bi bi-info-circle me-1"></i>
+            Running in Demo Mode. Add IBM credentials for full AI chat.
+          </div>
+          {% endif %}
+        </div>
+        <div class="bubble-time">ARIA · Just now</div>
+      </div>
+    </div>
+
+    <!-- Suggested prompts -->
+    <div class="suggested-prompts" id="suggestedPrompts">
+      <div class="prompts-label">Quick Questions:</div>
+      <div class="prompts-grid">
+        <button class="prompt-chip" data-msg="What are the best hotels for my trip?">🏨 Best hotels</button>
+        <button class="prompt-chip" data-msg="Recommend local food and restaurants">🍽️ Local food</button>
+        <button class="prompt-chip" data-msg="What are the safety tips for this destination?">🛡️ Safety tips</button>
+        <button class="prompt-chip" data-msg="How can I save money on this trip?">💰 Save money</button>
+        <button class="prompt-chip" data-msg="What should I pack for this trip?">🎒 Packing list</button>
+        <button class="prompt-chip" data-msg="Tell me about visa requirements and documents needed">📋 Visa info</button>
+      </div>
+    </div>
+
+    <!-- Chat input -->
+    <div class="chat-input-area">
+      <div class="chat-input-row">
+        <textarea class="chat-input" id="chatInput" placeholder="Ask ARIA anything about your trip..."
+                  rows="1" maxlength="2000"></textarea>
+        <button class="chat-send-btn" id="sendChatBtn" title="Send message">
+          <i class="bi bi-send-fill"></i>
+        </button>
+      </div>
+      <div class="chat-input-hint">Press Enter to send · Shift+Enter for new line</div>
+      <div class="chat-typing d-none" id="chatTyping">
+        <span class="typing-dot"></span>
+        <span class="typing-dot"></span>
+        <span class="typing-dot"></span>
+        <small class="ms-2 text-muted">ARIA is thinking...</small>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ─── PDF Export Toast ────────────────────────────────────────────────────── -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index:1100">
+  <div id="exportToast" class="toast tpp-toast align-items-center" role="alert">
+    <div class="d-flex">
+      <div class="toast-body" id="toastBody">Exporting PDF...</div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Copy Toast ──────────────────────────────────────────────────────────── -->
+<div class="position-fixed top-0 start-50 translate-middle-x mt-4" style="z-index:1100">
+  <div id="copyToast" class="toast tpp-toast align-items-center" role="alert">
+    <div class="d-flex">
+      <div class="toast-body"><i class="bi bi-check-circle me-2 text-success"></i>Copied to clipboard!</div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

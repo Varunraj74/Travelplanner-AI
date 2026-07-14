@@ -1,0 +1,15 @@
+# Flask & Server
+Flask==3.0.3
+gunicorn==22.0.0
+python-dotenv==1.0.1
+Werkzeug==3.0.3
+
+# IBM watsonx.ai SDK
+# 1.5.14 is the latest release; requires pandas>=2.3 (pre-installed on Python 3.14)
+ibm-watsonx-ai==1.5.14
+
+# PDF Generation
+reportlab==4.2.2
+
+# Utilities
+requests==2.32.3

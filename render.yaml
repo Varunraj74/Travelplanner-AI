@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: travel-planner-pro
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn run:app --bind 0.0.0.0:$PORT --workers 2 --timeout 120
+    envVars:
+      - key: IBM_API_KEY
+        sync: false
+      - key: IBM_PROJECT_ID
+        sync: false
+      - key: IBM_ENDPOINT_URL
+        value: https://us-south.ml.cloud.ibm.com
+      - key: IBM_MODEL_ID
+        value: ibm/granite-13b-instruct-v2
+      - key: SECRET_KEY
+        generateValue: true
+      - key: FLASK_ENV
+        value: production
+      - key: PYTHON_VERSION
+        value: "3.11.0"
