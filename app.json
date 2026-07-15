@@ -1,0 +1,31 @@
+{
+  "name": "TravelPlannerPro",
+  "description": "AI-Powered Travel Planner Agent built using Python Flask, IBM watsonx.ai and IBM Granite Foundation Models.",
+  "repository": "https://github.com/Varunraj74/TravelGPT",
+  "keywords": [
+    "python",
+    "flask",
+    "ibm",
+    "watsonx",
+    "granite",
+    "travel",
+    "ai"
+  ],
+  "env": {
+    "IBM_API_KEY": {
+      "description": "IBM Cloud API Key"
+    },
+    "IBM_PROJECT_ID": {
+      "description": "IBM watsonx.ai Project ID"
+    },
+    "IBM_ENDPOINT_URL": {
+      "description": "IBM watsonx.ai Endpoint URL"
+    },
+    "IBM_MODEL_ID": {
+      "description": "IBM Granite Model ID"
+    },
+    "SECRET_KEY": {
+      "description": "Flask Secret Key"
+    }
+  }
+}
